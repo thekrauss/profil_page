@@ -1,1 +1,1 @@
-# GraphQL
+# GraphQL profile page
