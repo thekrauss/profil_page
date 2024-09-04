@@ -34,6 +34,9 @@ func run() error {
 		}
 	}()
 
+	fs := http.FileServer(http.Dir("front"))
+	http.Handle("/front/", http.StripPrefix("/front/", fs))
+
 	signalChan := make(chan os.Signal, 1)
 	done := make(chan struct{})
 	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)

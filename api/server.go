@@ -29,11 +29,11 @@ func NewServer(store db.Store) *MyServer {
 	}
 	server.routes()
 
-	fmt.Println(ColorBlue, "(http://localhost:8079) - Server started on port", port, ColorReset)
+	fmt.Println(ColorBlue, "(http://localhost:8080) - Server started on port", port, ColorReset)
 	fmt.Println(ColorGreen, "[SERVER_INFO] : To stop the server : Ctrl + c", ColorReset)
 
 	srv := &http.Server{
-		Addr:              "localhost:8079",
+		Addr:              "localhost:8080",
 		Handler:           router,
 		ReadHeaderTimeout: 15 * time.Second,
 		ReadTimeout:       15 * time.Second,

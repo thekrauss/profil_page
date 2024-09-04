@@ -7,8 +7,10 @@ import (
 )
 
 func (s *MyServer) routes() {
+	s.Router.Handle("/front/", http.StripPrefix("/front/", http.FileServer(http.Dir("front"))))
 	s.Router.HandleFunc("/", Chain(s.Home(), LogRequestMiddleware))
 	s.Router.HandleFunc("/login-form", Chain(s.LoginHandler(), LogRequestMiddleware))
+	s.Router.HandleFunc("/profil", Chain(s.GraphQlHander(), LogRequestMiddleware))
 	s.Router.HandleFunc("/protected", Chain(s.ProtectedHandler(), LogRequestMiddleware, s.Authenticate))
 }
 

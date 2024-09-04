@@ -122,7 +122,6 @@ func (s *MyServer) LoginHandler() http.HandlerFunc {
 				Expires: time.Now().Add(24 * time.Hour),
 			})
 
-			// Set username cookie
 			http.SetCookie(w, &http.Cookie{
 				Name:    "username",
 				Value:   username,
