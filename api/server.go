@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"profile-app-backend/db"
 	"time"
 )
 
@@ -18,13 +17,11 @@ const (
 type MyServer struct {
 	Router *http.ServeMux
 	Server *http.Server
-	Store  db.Store
 }
 
-func NewServer(store db.Store) *MyServer {
+func NewServer() *MyServer {
 	router := http.NewServeMux()
 	server := &MyServer{
-		Store:  store,
 		Router: router,
 	}
 	server.routes()

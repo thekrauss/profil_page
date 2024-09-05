@@ -8,7 +8,6 @@ import (
 	"os"
 	"os/signal"
 	"profile-app-backend/api"
-	"profile-app-backend/db"
 	"syscall"
 	"time"
 )
@@ -21,18 +20,7 @@ func main() {
 }
 
 func run() error {
-	store := &db.DBStore{}
-	srv := api.NewServer(store)
-
-	db, err := store.OpenDatabase()
-	if err != nil {
-		return fmt.Errorf("failed to open database : %w", err)
-	}
-	defer func() {
-		if err := srv.Store.CloseDatabase(db); err != nil {
-			log.Printf("error when closing database : %v\n", err)
-		}
-	}()
+	srv := api.NewServer()
 
 	fs := http.FileServer(http.Dir("front"))
 	http.Handle("/front/", http.StripPrefix("/front/", fs))

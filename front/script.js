@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         try {
-            const response = await fetch('/api/auth/signin', {
+            const response = await fetch('/loginForm', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -99,7 +99,6 @@ async function showProfile(token) {
             document.getElementById('user-id').innerText = `User ID: ${user.id}`;
             document.getElementById('user-login').innerText = `Login: ${user.login}`;
 
-            // Charger les graphiques
             loadCharts(user.transactions, user.progress, user.results);
         } else {
             console.error('Failed to fetch user data:', await response.text());
