@@ -40,6 +40,8 @@ func (s *MyServer) GraphQlHander() http.HandlerFunc {
 		defer resp.Body.Close()
 
 		body, err := io.ReadAll(resp.Body)
+		log.Println("Response Body:", string(body))
+
 		if err != nil {
 			http.Error(w, "Failed to read response body", http.StatusInternalServerError)
 			log.Println("Failed to read response body", err)

@@ -8,7 +8,7 @@
 </head>
 <body>
     <!-- Section de login -->
-    <div id="loginSection" class="login-container" aria-labelledby="login-title">
+    <div id="loginSection" class="login-container hidden" aria-labelledby="login-title">
         <h2 id="login-title">Login</h2>
         <form id="loginForm">
             <!-- Champ de formulaire avec attribut aria -->
@@ -23,9 +23,12 @@
 
     <!-- Section de profil -->
     <div id="profileSection" class="hidden">
-        <h2>Welcome, <span id="username"></span></h2>
-        <p id="xp">XP: </p>
-        <button id="logoutButton">Logout</button>
+        <form id="profil" method="get"></form>
+            <h2>Welcome, <span id="username"></span></h2>
+            <p id="xp">XP: </p>
+            <button id="logoutButton">Logout</button>
     </div>
+
+    <script src="/front/script.js"></script>
 </body>
 </html>

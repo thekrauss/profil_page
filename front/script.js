@@ -9,15 +9,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     document.getElementById('loginForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-        document.getElementById('loading').classList.remove('hidden');
-        const usernameOrEmail = document.getElementById('usernameOrEmail').value;
+        const usernameOrEmail = document.getElementById('username_or_email').value;
         const password = document.getElementById('password').value;
 
-        if (!usernameOrEmail || !password) {
-            document.getElementById('error-message').textContent = 'Please enter a valid username/email and password';
-            return;
-        }
-
+        console.log("login", usernameOrEmail, password)
+    
         try {
             const response = await fetch('/loginForm', {
                 method: 'POST',
@@ -25,25 +21,25 @@ document.addEventListener("DOMContentLoaded", function() {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    username: usernameOrEmail,
+                    identifier: usernameOrEmail,
                     password: password
                 })
             });
-
+    
+            const data = await response.json();
             if (response.ok) {
-                const data = await response.json();
                 document.cookie = `token=${data.token}; path=/; Secure; SameSite=Strict`;
-                document.getElementById('loading').classList.add('hidden'); 
-                showProfile(data.token); 
+                showProfile(data.token);
             } else {
-                const errorMsg = await response.text();
-                document.getElementById('error-message').textContent = `Error: ${errorMsg}`;
+                throw new Error(data.message || 'Login failed');
             }
         } catch (error) {
-            console.error('Error during login:', error);
+            document.getElementById('error-message').textContent = `Error: ${error.message}`;
+        } finally {
+            document.getElementById('loading').classList.add('hidden');
         }
     });
-
+    
     // Gestion de la déconnexion
     document.getElementById('logoutButton').addEventListener('click', function() {
         document.cookie = 'token=; Max-Age=0'; // Supprimer le cookie
@@ -52,15 +48,17 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function showLogin() {
-    document.getElementById('loginSection').classList.remove('visible');
-    document.getElementById('loginSection').classList.add('hidden');
+    document.getElementById('loginSection').classList.remove('hidden');
+    document.getElementById('loginSection').classList.add('visible');
     document.getElementById('profileSection').classList.remove('visible');
     document.getElementById('profileSection').classList.add('hidden');
 }
 
 async function showProfile(token) {
     document.getElementById('loginSection').classList.add('hidden');
+    document.getElementById('loginSection').classList.remove('visible');
     document.getElementById('profileSection').classList.remove('hidden');
+    document.getElementById('profileSection').classList.add('visible');
 
     // Récupérer les données utilisateur via l'API GraphQL
     try {

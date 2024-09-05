@@ -3,6 +3,7 @@ package api
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -16,7 +17,7 @@ type LoginResponses struct {
 func (s *MyServer) LoginHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost {
-
+			fmt.Println("ici")
 			var credentials struct {
 				Identifier string `json:"identifier"`
 				Password   string `json:"password"`
@@ -28,22 +29,19 @@ func (s *MyServer) LoginHandler() http.HandlerFunc {
 				return
 			}
 
-			identifier := r.FormValue("identifier")
-			password := r.FormValue("password")
+			log.Println("Login attempt with identifier:", credentials.Identifier)
+			log.Println("Password provided:", credentials.Password)
 
-			log.Println("Login attempt with identifier:", identifier)
-			log.Println("Password provided:", password)
-
-			if identifier == "" || password == "" {
+			if credentials.Identifier == "" || credentials.Password == "" {
 				log.Println("Identifier or password is empty")
 				http.Error(w, "Invalid login credentials", http.StatusUnauthorized)
 				return
 			}
 
-			authURL := "https://zone01normandie.org/api/auth/signin"
+			authURL := "https://zone01normandie.org"
 			authPayload := map[string]string{
-				"identifier": identifier,
-				"password":   password,
+				"identifier": credentials.Identifier,
+				"password":   credentials.Password,
 			}
 
 			jsonPayload, err := json.Marshal(authPayload)
