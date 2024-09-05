@@ -51,6 +51,25 @@ body {
     background-color: #0056b3;
 }
 
+.hidden {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.visible {
+    display: block;
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.error-message {
+    color: red;
+    font-weight: bold;
+    text-align: center;
+}
+
+
 @media (max-width: 768px) {
     .login-container {
         width: 90%; 
@@ -64,3 +83,13 @@ body {
         padding: 10px;
     }
 }
+
+@media (max-width: 480px) {
+    h2 {
+        font-size: 20px;
+    }
+    input, button {
+        font-size: 14px;
+    }
+}
+

@@ -7,14 +7,26 @@
     <link rel="stylesheet" href="/front/css/style.css">
 </head>
 <body>
-    <div class="login-container">
-        <h2>Login</h2>
-        <form id="login-form" method="post">
-            <label for="username_or_email">Nom d'utilisateur ou e-mail</label>
-            <input type="text" id="username_or_email" name="username_or_email" placeholder="Nom d'utilisateur ou e-mail" required>
-            <input type="password" name="password" placeholder="Mot de passe" required>
-            <input type="submit" value="Se connecter">
+
+    <!-- Section de login -->
+    <div id="loginSection" aria-labelledby="login-title">
+        <h2 id="login-title">Login</h2>
+        <form id="loginForm">
+            <!-- Champ de formulaire avec attribut aria -->
+            <input type="text" id="username_or_email" aria-label="Username or Email" placeholder="Username or Email" required>
+            <input type="password" id="password" aria-label="Password" placeholder="Password" required>
+            <button type="submit">Login</button>
+            <div id="loading" class="hidden">Loading...</div>
         </form>
+        <p id="error-message" aria-live="assertive" class="error-message"></p>
+    </div>
+    
+
+    <!-- Section de profil -->
+    <div id="profileSection" class="hidden">
+        <h2>Welcome, <span id="username"></span></h2>
+        <p id="xp">XP: </p>
+        <button id="logoutButton">Logout</button>
     </div>
 </body>
 </html>

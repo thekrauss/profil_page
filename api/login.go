@@ -1,14 +1,11 @@
 package api
 
 import (
-	"database/sql"
-	"fmt"
+	"bytes"
+	"encoding/json"
 	"log"
 	"net/http"
-	"strings"
 	"time"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 type LoginResponses struct {
@@ -19,22 +16,17 @@ type LoginResponses struct {
 func (s *MyServer) LoginHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost {
-			err := r.ParseForm()
+
+			var credentials struct {
+				Identifier string `json:"identifier"`
+				Password   string `json:"password"`
+			}
+			err := json.NewDecoder(r.Body).Decode(&credentials)
 			if err != nil {
-				log.Println("Failed to parse form", err)
-				http.Error(w, "Internal server error", http.StatusInternalServerError)
+				log.Println("Failed to parse JSON body", err)
+				http.Error(w, "Invalid request payload", http.StatusBadRequest)
 				return
 			}
-
-			DB, err := s.Store.OpenDatabase()
-			if err != nil {
-				log.Println("Failed to open database", err)
-				http.Error(w, "Internal server error", http.StatusInternalServerError)
-				return
-			}
-			defer DB.Close()
-
-			fmt.Println("ping to database successful")
 
 			identifier := r.FormValue("identifier")
 			password := r.FormValue("password")
@@ -48,88 +40,58 @@ func (s *MyServer) LoginHandler() http.HandlerFunc {
 				return
 			}
 
-			if len(identifier) < 6 || len(identifier) > 16 || len(password) < 6 || len(password) > 16 {
-				log.Println("Identifier and Password must be between 6 and 16 characters long")
-				http.Error(w, "Identifier and Password must be between 6 and 16 characters long", http.StatusBadRequest)
+			authURL := "https://zone01normandie.org/api/auth/signin"
+			authPayload := map[string]string{
+				"identifier": identifier,
+				"password":   password,
+			}
+
+			jsonPayload, err := json.Marshal(authPayload)
+			if err != nil {
+				log.Println("Failed to create request payload", err)
+				http.Error(w, "Internal server error", http.StatusInternalServerError)
 				return
 			}
 
-			var userID int
-			var storedPassword, username string
-
-			if strings.Contains(identifier, "@") {
-				log.Println("Identified as email")
-				userID, err = GetUserIDbyEmail(DB, identifier)
-				if err != nil {
-					log.Println("Email does not exist", err)
-					http.Error(w, "Invalid login credentials", http.StatusUnauthorized)
-					return
-				}
-				storedPassword, err = GetPasswordByEmail(DB, identifier)
-				if err != nil {
-					log.Println("Failed to retrieve password by email", err)
-					http.Error(w, "Invalid login credentials", http.StatusUnauthorized)
-					return
-				}
-
-				username, err = GetUsernameByEmail(DB, identifier)
-				if err != nil {
-					log.Println("Failed to retrieve username by email", err)
-					http.Error(w, "Invalid login credentials", http.StatusUnauthorized)
-					return
-				}
-
-			} else {
-				log.Println("Identified as username")
-				userID, err = GetUserIDbyUsername(DB, identifier)
-				if err != nil {
-					if err == sql.ErrNoRows {
-						log.Println("Username does not exist:", identifier)
-					} else {
-						log.Println("Failed to retrieve user ID by username:", err)
-					}
-					http.Error(w, "Invalid login credentials", http.StatusUnauthorized)
-					return
-				}
-				storedPassword, err = GetPasswordByUsername(DB, identifier)
-				if err != nil {
-					log.Println("Failed to retrieve password by username", err)
-					http.Error(w, "Invalid login credentials", http.StatusUnauthorized)
-					return
-				}
-				username = identifier
+			req, err := http.NewRequest("POST", authURL, bytes.NewBuffer(jsonPayload))
+			if err != nil {
+				log.Println("Failed to create request to auth API", err)
+				http.Error(w, "Internal server error", http.StatusInternalServerError)
+				return
 			}
 
-			log.Println("UserID:", userID, "StoredPassword:", storedPassword)
-
-			err = bcrypt.CompareHashAndPassword([]byte(storedPassword), []byte(password))
-			if err != nil {
-				log.Println("Incorrect password", err)
+			req.Header.Set("Content-Type", "application/json")
+			client := &http.Client{Timeout: time.Second * 10}
+			resp, err := client.Do(req)
+			if err != nil || resp.StatusCode != http.StatusOK {
+				log.Println("Failed to authenticate with school API", err)
 				http.Error(w, "Invalid login credentials", http.StatusUnauthorized)
 				return
 			}
 
-			token, err := GenerateJWT(userID)
+			defer resp.Body.Close()
+
+			var authResponse struct {
+				Token string `json:"token"`
+			}
+
+			err = json.NewDecoder(resp.Body).Decode(&authResponse)
 			if err != nil {
-				log.Println("Failed to generate token", err)
+				log.Println("Failed to parse auth API response", err)
 				http.Error(w, "Internal server error", http.StatusInternalServerError)
 				return
 			}
 
 			http.SetCookie(w, &http.Cookie{
-				Name:    "token",
-				Value:   token,
-				Expires: time.Now().Add(24 * time.Hour),
+				Name:     "token",
+				Value:    authResponse.Token,
+				Expires:  time.Now().Add(24 * time.Hour),
+				HttpOnly: true,
+				Secure:   true,
 			})
 
-			http.SetCookie(w, &http.Cookie{
-				Name:    "username",
-				Value:   username,
-				Expires: time.Now().Add(24 * time.Hour),
-			})
-
-			log.Println("User logged in successfully, userID:", userID)
-			SendJSONResponse(w, LoginResponses{Token: token, Message: "Login successful"}, http.StatusOK)
+			log.Println("User authentificated successfully")
+			SendJSONResponse(w, LoginResponses{Token: authResponse.Token, Message: "Login successful"}, http.StatusOK)
 
 		} else {
 			http.NotFound(w, r)
