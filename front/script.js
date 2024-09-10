@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function() {
     
     // Gestion de la déconnexion
     document.getElementById('logoutButton').addEventListener('click', function() {
-        document.cookie = 'token=; Max-Age=0'; // Supprimer le cookie
+        document.cookie = 'token=; Max-Age=0'; 
         showLogin(); 
     });
 });
