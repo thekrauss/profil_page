@@ -11,7 +11,7 @@ func (s *MyServer) routes() {
 
 	s.Router.HandleFunc("/", Chain(s.Home(), LogRequestMiddleware))
 	s.Router.HandleFunc("/loginForm", Chain(s.LoginHandler(), LogRequestMiddleware))
-	s.Router.HandleFunc("/profil", Chain(s.GraphQlHander(), LogRequestMiddleware))
+	s.Router.HandleFunc("/profil", Chain(s.GraphQlHandler(), LogRequestMiddleware))
 	s.Router.HandleFunc("/protected", Chain(s.ProtectedHandler(), LogRequestMiddleware, s.Authenticate))
 }
 

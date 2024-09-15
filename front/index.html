@@ -1,34 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <title>Mon Profil</title>
     <link rel="stylesheet" href="/front/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+    <script src="https://d3js.org/d3.v6.min.js"></script>
 </head>
 <body>
-    <!-- Section de login -->
-    <div id="loginSection" class="login-container hidden" aria-labelledby="login-title">
-        <h2 id="login-title">Login</h2>
-        <form id="loginForm">
-            <!-- Champ de formulaire avec attribut aria -->
-            <input type="text" id="username_or_email" aria-label="Username or Email" placeholder="Username or Email" required>
-            <input type="password" id="password" aria-label="Password" placeholder="Password" required>
-            <button type="submit">Login</button>
-            <div id="loading" class="hidden">Loading...</div>
-        </form>
-        <p id="error-message" aria-live="assertive" class="error-message"></p>
-    </div>
-    
-
-    <!-- Section de profil -->
-    <form id="profil" method="get">
-        <div id="profileSection" class="hidden">
-            <h2>Welcome, <span id="username"></span></h2>
-            <p id="xp">XP: </p>
-            <button id="logoutButton">Logout</button>
+    <!-- En-tête -->
+    <header class="header">
+        <div class="container">
+            <h1>Mon Application</h1>
         </div>
-    </form>
+    </header>
+
+    <div class="container">
+        <!-- Section de login -->
+        <div id="loginSection" class="card" aria-labelledby="login-title">
+            <h2 id="login-title">Connexion</h2>
+            <form id="loginForm">
+                <input type="text" id="username_or_email" aria-label="Nom d'utilisateur ou Email" placeholder="Nom d'utilisateur ou Email" required>
+                <input type="password" id="password" aria-label="Mot de passe" placeholder="Mot de passe" required>
+                <button type="submit">Se connecter</button>
+                <div id="loading" class="hidden">Chargement...</div>
+            </form>
+            <p id="error-message" aria-live="assertive" class="error-message"></p>
+        </div>
+
+        <!-- Section de profil -->
+        <div id="profileSection" class="profile-card hidden">
+            <div class="profile-header">
+                <h2>Bienvenue, <span id="username"></span></h2>
+            </div>
+            <div class="profile-info">
+                <p><i class="fas fa-star"></i> <span id="xp">XP : </span></p>
+                <p><i class="fas fa-university"></i> <span id="campus">Campus : </span></p>
+                <p><i class="fas fa-chart-line"></i> <span id="audit-ratio">Ratio d'audit : </span></p>
+                <button id="logoutButton">Déconnexion</button>
+            </div>
+            <!-- Div pour les graphiques -->
+            <div id="charts-container">
+                <div id="charts"></div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- Pied de page -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Ma Page Profil Etudiant</p>
+        </div>
+    </footer>
 
     <script src="/front/script.js"></script>
 </body>
