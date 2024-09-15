@@ -410,6 +410,6 @@ function loadCharts(transactions, xpPerProject, results) {
             .attr("text-anchor", "middle")
             .style("font-size", "16px")
             .style("font-weight", "bold")
-            .text("Grades des Résultats");
+            .text("Grades des 10 derniers Résultats");
     }
 }
