@@ -13,6 +13,9 @@ document.addEventListener("DOMContentLoaded", function() {
         const usernameOrEmail = document.getElementById('username_or_email').value;
         const password = document.getElementById('password').value;
 
+        document.getElementById('loading').classList.remove('hidden');
+        document.getElementById('error-message').textContent = '';
+
         console.log("login", usernameOrEmail, password);
 
         try {
@@ -31,6 +34,10 @@ document.addEventListener("DOMContentLoaded", function() {
             if (response.ok) {
                 document.cookie = `token=${data.token}; path=/; Secure; SameSite=Strict`;
                 showProfile();
+
+                document.getElementById('username_or_email').value = '';
+                document.getElementById('password').value = '';
+                
             } else {
                 throw new Error(data.message || 'Login failed');
             }
@@ -49,8 +56,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function showLogin() {
     document.getElementById('loginSection').classList.remove('hidden');
-    document.getElementById('loginSection').classList.add('visible');
-    document.getElementById('profileSection').classList.remove('visible');
     document.getElementById('profileSection').classList.add('hidden');
 }
 
@@ -167,9 +172,7 @@ async function getBasicInfo() {
 
 async function showProfile() {
     document.getElementById('loginSection').classList.add('hidden');
-    document.getElementById('loginSection').classList.remove('visible');
     document.getElementById('profileSection').classList.remove('hidden');
-    document.getElementById('profileSection').classList.add('visible');
 
     try {
         // Récupérer les informations de base
