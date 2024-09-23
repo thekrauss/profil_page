@@ -1,1 +1,0 @@
-https://graphqlz01.netlify.app
