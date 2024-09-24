@@ -62,7 +62,7 @@ h2 {
 
 .login-form input[type="text"],
 .login-form input[type="password"] {
-  width: 100%;
+  width: 92%;
   padding: 12px 15px;
   border: 1px solid var(--border-color);
   border-radius: 6px;
