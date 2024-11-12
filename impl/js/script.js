@@ -339,8 +339,8 @@ async function xpPerProjectPieChart(form) {
       ],
     },
     options: {
-      responsive: true, // Assure que le graphique est responsive
-      maintainAspectRatio: false, // Désactive le ratio fixe pour meilleure flexibilité
+      responsive: true,
+      maintainAspectRatio: false, 
       plugins: {
         legend: {
           position: "top",
@@ -385,15 +385,12 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 
 // Logout logic
 function logout() {
-  // Masquer les informations et afficher à nouveau le formulaire de connexion
   document.getElementById("basicInfo").style.display = "none";
   document.getElementById("svgs").style.display = "none";
   document.getElementById("login").style.display = "block";
 
-  // Réinitialiser le formulaire de connexion
   document.getElementById("loginForm").reset();
 
-  // Effacer les messages d'erreur ou autres données affichées
   document.getElementById("error").innerText = "";
   document.getElementById("name").innerText = "";
   document.getElementById("username").innerText = "";
@@ -401,6 +398,5 @@ function logout() {
   document.getElementById("xp").innerText = "";
 }
 
-// Ajouter l'événement au bouton logout
 document.getElementById("logoutButton").addEventListener("click", logout);
 
