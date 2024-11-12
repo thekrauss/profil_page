@@ -31,7 +31,7 @@ Ce projet permet aux utilisateurs de créer leur propre page de profil personnal
 
 1. **Clonez le projet :**
    ```bash
-   git clone https://github.com/username/mon-profil-graphql.git
+   git clone https://github.com/thekrauss/profil_page.git
    cd mon-profil-graphql
    ```
 
